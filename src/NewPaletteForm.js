@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -84,6 +84,8 @@ export default function NewPaletteForm() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [currentColor, setCurrentColor] = useState("teal");
+  const [colors, setColors] = useState(["purple", "#345764"]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -91,6 +93,14 @@ export default function NewPaletteForm() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const updateCurrentColor = (newColor) => {
+    setCurrentColor(newColor.hex);
+  };
+
+  const addNewColor = () => {
+    setColors((oldColor) => [...oldColor, currentColor]);
   };
 
   return (
@@ -145,8 +155,16 @@ export default function NewPaletteForm() {
             Random Color
           </Button>
         </div>
-        <ChromePicker onChangeComplete={(newColor) => console.log(newColor)} />
-        <Button variant="contained" color="primary">
+        <ChromePicker
+          color={currentColor}
+          onChangeComplete={updateCurrentColor}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ backgroundColor: currentColor }}
+          onClick={addNewColor}
+        >
           Add Color
         </Button>
       </Drawer>
@@ -156,6 +174,9 @@ export default function NewPaletteForm() {
         })}
       >
         <div className={classes.drawerHeader} />
+        {colors.map((color) => (
+          <li style={{ backgroundColor: color }}>{color}</li>
+        ))}
       </main>
     </div>
   );
